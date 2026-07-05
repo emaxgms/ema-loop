@@ -39,7 +39,7 @@ export class TaskStore {
           @worktreePath, @assignee, @attempts, @maxAttempts, @createdAt, @startedAt, @finishedAt, @error, @metadata
         )`,
       ),
-      getTask: this.db.prepare(`SELECT * FROM tasks WHERE id = @id`),
+      getTask: this.db.prepare(`SELECT * FROM tasks WHERE id = ?`),
       updateTask: this.db.prepare(
         `UPDATE tasks SET
           repo = @repo, number = @number, title = @title, body = @body, labels = @labels,
@@ -270,7 +270,7 @@ export class TaskStore {
     });
 
     const row = this.db
-      .prepare(`SELECT * FROM fix_patterns WHERE pattern = @pattern AND repo = @repo`)
+      .prepare(`SELECT * FROM fix_patterns WHERE pattern = ? AND repo = ?`)
       .get(pattern.pattern, pattern.repo) as Record<string, unknown>;
 
     return {

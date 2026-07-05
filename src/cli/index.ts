@@ -174,8 +174,7 @@ program
 
     let totalCreated = 0;
     for (const repo of repos) {
-      const result = await fetcher.run({
-        id: randomUUID(),
+      const task = ctx.store.createTask({
         repo,
         number: 0,
         title: `Fetched from ${repo}`,
@@ -186,11 +185,14 @@ program
         baseBranch: 'main',
         fixBranch: `fix/${randomUUID()}`,
         worktreePath: '',
+        assignee: undefined,
         attempts: 0,
         maxAttempts: 3,
         createdAt: new Date().toISOString(),
         metadata: {},
       });
+
+      const result = await fetcher.run(task);
 
       if (result.success) {
         totalCreated++;
