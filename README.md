@@ -16,6 +16,68 @@ EMA-LOOP v0.2 transforms the original bash-based automation into a robust, type-
 ┌─────────────┐   ┌─────────────────┐   ┌─────────────────┐
 │   Task DB   │←→│  Pipeline Engine │←→│  Agent Memory   │
 │  (SQLite)   │   │  (Orchestrator) │   │  (Patterns)     │
+└─────────────┘   └─────────────────┘   └─────────────────┘
+```
+
+## Quick Start
+
+```bash
+# Clone & install
+git clone <repo-url> ema-loop
+cd ema-loop
+npm ci
+
+# Configure
+cp .env.example .env
+# Edit .env with GITHUB_TOKEN, etc.
+
+# Build (compile TypeScript to dist/)
+npm run build
+
+# Initialize tasks directory
+npm run init
+
+# Fetch issues (after build)
+npx ema-loop fetch --repos "owner/repo"
+
+# Or run via tsx during development
+npm run dev -- fetch --repos "owner/repo"
+
+# Run daemon (continuous)
+npx ema-loop daemon --repos "owner/repo" --interval 60000
+```
+
+## CLI Commands
+
+```bash
+# Task lifecycle
+npx ema-loop fetch --repos "owner/repo"     # Pull new issues
+npx ema-loop triage                          # Prioritize pending
+npx ema-loop run <taskId>                    # Full pipeline
+npx ema-loop ship <taskId>                   # Commit + PR + preview
+
+# Single stages
+npx ema-loop plan <taskId>
+npx ema-loop implement <taskId>
+npx ema-loop validate <taskId>
+npx ema-loop review <taskId>
+
+# Monitoring
+npx ema-loop list                            # All tasks
+npx ema-loop status <taskId>                 # Task detail + events
+npx ema-loop patterns --repo owner/repo      # Learned patterns
+
+# Daemon
+npx ema-loop daemon --repos "owner/repo1,owner/repo2" --interval 60000
+
+# Reset database
+npm run reset
+```
+
+Use `npm run dev -- <command>` as an alternative during development to skip rebuilding.
+┌─────────────┐   ┌─────────────────┐   ┌─────────────────┐
+│   Task DB   │←→│  Pipeline Engine │←→│  Agent Memory   │
+│  (SQLite)   │   │  (Orchestrator) │   │  (Patterns)     │
 └─────────────┘   └────────┬────────┘   └─────────────────┘
                            │
          ┌─────────────────┼─────────────────┐
@@ -192,10 +254,10 @@ ema-loop/
 # Type-check
 npm run typecheck
 
-# Lint
-npm run lint
+# Build
+npm run build
 
-# Dev mode (tsx)
+# Dev mode (tsx, skip rebuild)
 npm run dev -- <command>
 ```
 

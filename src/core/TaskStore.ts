@@ -28,6 +28,7 @@ export class TaskStore {
 
   constructor(dbPath: string) {
     this.db = getDb(dbPath);
+    this.init();
     this.stmts = {
       createTask: this.db.prepare(
         `INSERT INTO tasks (

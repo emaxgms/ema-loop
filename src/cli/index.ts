@@ -39,7 +39,6 @@ function createContext(
   const logger = createLogger('cli');
 
   const store = new TaskStore(dbPath);
-  store.init();
 
   const eventBus = new EventBus();
   eventBus.on('task:event', (event) => {

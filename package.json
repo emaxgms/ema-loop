@@ -1,11 +1,17 @@
 {
   "name": "ema-loop",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
-  "main": "./src/core/index.ts",
+  "main": "./dist/core/index.js",
+  "bin": {
+    "ema-loop": "./dist/cli/index.js"
+  },
   "scripts": {
-    "build": "tsc --noEmit",
-    "typecheck": "tsc --noEmit"
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "dev": "tsx src/cli/index.ts",
+    "init": "node -e \"const fs=require('fs');fs.mkdirSync('tasks',{recursive:true});console.log('tasks directory initialized')\"",
+    "reset": "tsx src/cli/index.ts reset"
   },
   "dependencies": {
     "better-sqlite3": "^11.8.1",
