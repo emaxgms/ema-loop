@@ -15,9 +15,20 @@ EMA-LOOP v0.2 transforms the original bash-based automation into a robust, type-
 ```
 ┌─────────────┐   ┌─────────────────┐   ┌─────────────────┐
 │   Task DB   │←→│  Pipeline Engine │←→│  Agent Memory   │
-│  (SQLite)   │   │  (Orchestrator) │   │  (Patterns)     │
-└─────────────┘   └─────────────────┘   └─────────────────┘
+│  (SQLite)   │   │  (Orchestrator) │   │  (Patterns)     └─────────────┘   └─────────────────┘   └─────────────────┘
 ```
+
+## Pipeline Stages
+
+| Stage | Description |
+|-------|-------------|
+| **Fetch** | Pull GitHub issues via REST/GraphQL API |
+| **Triage** | Filter, prioritize, estimate complexity |
+| **Plan** | Decompose fix into actionable steps |
+| **Implement** | RUG loop with `agy` agent until tests pass |
+| **Validate** | Run test suite, linting, type checks |
+| **Review** | AI code review (security, style, patterns) |
+| **Ship** | Commit, push, create PR, deploy Firebase preview |
 
 ## Quick Start
 
@@ -40,7 +51,7 @@ npm run init
 # Fetch issues (after build)
 npx ema-loop fetch --repos "owner/repo"
 
-# Or run via tsx during development
+# Or run via tsx during development (no build needed)
 npm run dev -- fetch --repos "owner/repo"
 
 # Run daemon (continuous)
@@ -75,85 +86,6 @@ npm run reset
 ```
 
 Use `npm run dev -- <command>` as an alternative during development to skip rebuilding.
-┌─────────────┐   ┌─────────────────┐   ┌─────────────────┐
-│   Task DB   │←→│  Pipeline Engine │←→│  Agent Memory   │
-│  (SQLite)   │   │  (Orchestrator) │   │  (Patterns)     │
-└─────────────┘   └────────┬────────┘   └─────────────────┘
-                           │
-         ┌─────────────────┼─────────────────┐
-         ▼                 ▼                 ▼
-   ┌─────────┐       ┌──────────┐      ┌──────────┐
-   │ Triage  │       │ Plan     │      │Implement │
-   │ Stage   │       │ Stage    │      │(RUG Loop)│
-   └─────────┘       └──────────┘      └────┬─────┘
-                                             ▼
-                                    ┌─────────────┐
-                                    │  Validate   │
-                                    │  Review     │
-                                    │  Ship       │
-                                    └─────────────┘
-```
-
-## Pipeline Stages
-
-| Stage | Description |
-|-------|-------------|
-| **Fetch** | Pull GitHub issues via REST/GraphQL API |
-| **Triage** | Filter, prioritize, estimate complexity |
-| **Plan** | Decompose fix into actionable steps |
-| **Implement** | RUG loop with `agy` agent until tests pass |
-| **Validate** | Run test suite, linting, type checks |
-| **Review** | AI code review (security, style, patterns) |
-| **Ship** | Commit, push, create PR, deploy Firebase preview |
-
-## Quick Start
-
-```bash
-# Clone & install
-git clone <repo-url> ema-loop
-cd ema-loop
-npm ci
-
-# Configure
-cp .env.example .env
-# Edit .env with GITHUB_TOKEN, etc.
-
-# Build
-npm run build
-
-# Initialize database
-npm run init
-
-# Fetch issues
-ema-loop fetch --repos "owner/repo"
-
-# Run daemon (continuous)
-ema-loop daemon --repos "owner/repo" --interval 60000
-```
-
-## CLI Commands
-
-```bash
-# Task lifecycle
-ema-loop fetch --repos "owner/repo"     # Pull new issues
-ema-loop triage                          # Prioritize pending
-ema-loop run <taskId>                    # Full pipeline
-ema-loop ship <taskId>                   # Commit + PR + preview
-
-# Single stages
-ema-loop plan <taskId>
-ema-loop implement <taskId>
-ema-loop validate <taskId>
-ema-loop review <taskId>
-
-# Monitoring
-ema-loop list                            # All tasks
-ema-loop status <taskId>                 # Task detail + events
-ema-loop patterns --repo owner/repo      # Learned patterns
-
-# Daemon
-ema-loop daemon --repos "owner/repo1,owner/repo2" --interval 60000
-```
 
 ## Configuration
 
